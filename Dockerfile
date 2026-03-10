@@ -20,10 +20,10 @@ USER appuser
 
 EXPOSE 8000
 
-# Avvio Uvicorn (assume app.main:app esista davvero)
-CMD ["uvicorn", "app.main:app", 
-     "--host", "0.0.0.0", 
-     "--port", "8000", 
-     "--workers", "1", 
-     "--loop", "asyncio", 
+# Avvio Uvicorn
+CMD ["uvicorn", "app.main:app",
+     "--host", "0.0.0.0",
+     "--port", "8000",
+     "--workers", "1",
+     "--loop", "asyncio",
      "--access-log"]
