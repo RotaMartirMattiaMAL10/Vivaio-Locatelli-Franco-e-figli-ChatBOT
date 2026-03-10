@@ -1,22 +1,26 @@
 FROM python:3.12-slim
 
-# Security: run as non-root
+# Crea utente non-root
 RUN useradd --create-home appuser
 WORKDIR /app
 
-# Install dependencies first (layer caching)
+# Installa dipendenze (layer caching + pip aggiornato)
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+RUN python -m pip install --upgrade pip \
+    && python -m pip install --no-cache-dir -r requirements.txt
 
-# Copy source
+# Copia il sorgente
 COPY . .
 
-# Drop privileges
+# Permessi alla cartella di lavoro
+RUN chown -R appuser:appuser /app
+
+# Droppa privilegi
 USER appuser
 
 EXPOSE 8000
 
-# Uvicorn with 1 async worker (SSE requires sticky connections)
+# Avvio Uvicorn (assume app.main:app esista davvero)
 CMD ["uvicorn", "app.main:app", 
      "--host", "0.0.0.0", 
      "--port", "8000", 
